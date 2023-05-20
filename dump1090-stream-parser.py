@@ -103,11 +103,11 @@ def main():
 		try:
 			s = connect_to_socket(args.location, args.port)
 			count_failed_connection_attempts = 1
-			print "Connected to dump1090 broadcast"
+			print("Connected to dump1090 broadcast")
 			break
 		except socket.error:
 			count_failed_connection_attempts += 1
-			print "Cannot connect to dump1090 broadcast. Making attempt %s." % (count_failed_connection_attempts)
+			print(f"Cannot connect to dump1090 broadcast. Making attempt {count_failed_connection_attempts}.")
 			time.sleep(args.connect_attempt_delay)
 	else:
 		quit()
@@ -133,7 +133,7 @@ def main():
 				pass
 
 			if len(message) == 0:
-				print ts, "No broadcast received. Attempting to reconnect"
+				print(ts, "No broadcast received. Attempting to reconnect")
 				time.sleep(args.connect_attempt_delay)
 				s.close()
 
@@ -141,11 +141,11 @@ def main():
 					try:
 						s = connect_to_socket(args.location, args.port)
 						count_failed_connection_attempts = 1
-						print "Reconnected!"
+						print("Reconnected!")
 						break
 					except socket.error:
 						count_failed_connection_attempts += 1
-						print "The attempt failed. Making attempt %s." % (count_failed_connection_attempts)
+						print(f"The attempt failed. Making attempt {count_failed_connection_attempts}.")
 						time.sleep(args.connect_attempt_delay)
 				else:
 					quit()
@@ -204,17 +204,16 @@ def main():
 						if count_since_commit % args.batch_size == 0:
 							conn.commit()
 							if cur_time != last_time:
-								print "averging %s rows per second, currently %s rows per second" % (float(count_total) / (cur_time - start_time).total_seconds(),float(count_since_commit) / (cur_time - last_time).total_seconds())
+								print(f"averging {float(count_total) / (cur_time - start_time).total_seconds()} rows per second, currently {float(count_since_commit) / (cur_time - last_time).total_seconds()} rows per second")
 							else:
-								print "averging %s rows per second" % (float(count_total) / (cur_time - start_time).total_seconds(),)
+								print(f"averging {float(count_total) / (cur_time - start_time).total_seconds()} rows per second")
 							if count_since_commit > args.batch_size:
-								print ts, "All caught up, %s rows, successfully written to database" % (count_since_commit)
+								print(ts, f"All caught up, {count_since_commit} rows, successfully written to database")
 							count_since_commit = 0
 							last_time = cur_time
 
 					except sqlite3.OperationalError:
-						print ts, "Could not write to database, will try to insert %s rows on next commit" % (count_since_commit + args.batch_size,)
-
+						print(ts, f"Could not write to database, will try to insert {count_since_commit + args.batch_size} rows on next commit")
 
 					# since everything was valid we reset the stream message
 					data_str = ""
@@ -224,15 +223,15 @@ def main():
 					continue
 
 	except KeyboardInterrupt:
-		print "\n%s Closing connection" % (ts,)
+		print(f"\n{ts} Closing connection")
 		s.close()
 
 		conn.commit()
 		conn.close()
-		print ts, "%s squitters added to your database" % (count_total,)
+		print(ts, f"{count_total} squitters added to your database")
 
 	except sqlite3.ProgrammingError:
-		print "Error with ", line
+		print("Error with ", line)
 		quit()
 
 def connect_to_socket(loc,port):
