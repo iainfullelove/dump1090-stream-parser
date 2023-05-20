@@ -125,8 +125,7 @@ def main():
 
 			# receive a stream message
 			try:
-				message = ""
-				message = s.recv(args.buffer_size)
+				message = s.recv(args.buffer_size).decode("utf-8") 
 				data_str += message.strip("\n")
 			except socket.error:
 				# this happens if there is no connection and is delt with below
